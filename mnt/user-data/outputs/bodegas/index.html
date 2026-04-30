@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Industrial Warehouse Complex — Daniel Marroquín</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+
+:root{--ink:#0e0e0e;--paper:#f5f2eb;--paper2:#ede9df;--accent:#1a3a5c;--accent2:#c4872a;--muted:#7a7468;--border:rgba(14,14,14,0.1);--font-display:'Playfair Display',Georgia,serif;--font-body:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;}
+.topbar{padding:1rem 3rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--paper);position:relative;z-index:100;}
+.back{font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.15s;}
+.back:hover{color:var(--ink);}
+.topbar-site{font-family:var(--font-mono);font-size:11px;color:var(--muted);}
+.hero{padding:2.5rem 3rem 2rem;border-bottom:2px solid rgba(0,0,0,0.08);background:var(--paper);position:relative;z-index:100;}
+.hero-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent2);margin-bottom:0.6rem;display:block;}
+.hero-title{font-family:var(--font-display);font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:700;line-height:1.1;letter-spacing:-0.02em;color:var(--ink);margin-bottom:0.8rem;}
+.hero-meta{font-family:var(--font-mono);font-size:11px;color:var(--muted);display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1rem;}
+.hero-desc{font-size:14px;color:#4a4740;max-width:680px;line-height:1.7;margin-bottom:1.2rem;}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.btn{font-family:var(--font-mono);font-size:11px;padding:8px 16px;border-radius:6px;text-decoration:none;border:1px solid;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;}
+.btn-primary{background:var(--accent);color:white;border-color:var(--accent);}
+.btn-primary:hover{background:#0f2438;}
+.btn-secondary{background:transparent;color:var(--ink);border-color:rgba(0,0,0,0.15);}
+.btn-secondary:hover{background:var(--ink);color:var(--paper);}
+.dashboard-label{font-family:var(--font-mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);padding:1rem 3rem 0.75rem;border-bottom:1px solid rgba(0,0,0,0.07);background:var(--paper);position:relative;z-index:100;}
+.site-footer{border-top:1px solid var(--border);padding:1.2rem 3rem;display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--muted);background:var(--paper2);position:relative;z-index:100;}
+.site-footer a{color:inherit;text-decoration:none;}
+@media(max-width:700px){.topbar,.hero,.dashboard-label,.site-footer{padding-left:1.5rem;padding-right:1.5rem;}}
+
+/* ── Dashboard styles (scoped inside .dash-wrap) ── */
+.dash-wrap { 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0b0f14;
+    --surface: #131820;
+    --surface2: #1a2230;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8edf5;
+    --muted: #6b7a94;
+    --accent: #3b82f6;
+    --accent2: #10b981;
+    --accent3: #f59e0b;
+    --danger: #ef4444;
+    --font-display: 'Syne', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-display);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .header-left { flex: 1; min-width: 240px; }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  h1 {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  h1 span { color: var(--accent); }
+  .header-meta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid;
+  }
+  .badge-blue { border-color: rgba(59,130,246,0.4); color: #93bbff; background: rgba(59,130,246,0.08); }
+  .badge-green { border-color: rgba(16,185,129,0.4); color: #6ee7c0; background: rgba(16,185,129,0.08); }
+  .header-badges { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; padding-top: 4px; }
+
+  /* LAYOUT */
+  main { padding: 2rem 3rem 4rem; max-width: 1400px; margin: 0 auto; }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 2.5rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* METRICS GRID */
+  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 0.5rem; }
+  .metric {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .metric::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent-color, var(--accent));
+  }
+  .metric-label { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .metric-value { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+  .metric-sub { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+  /* CHART CARDS */
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 780px) { .charts-grid { grid-template-columns: 1fr; } main { padding: 1.5rem; } header { padding: 1.5rem; } }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .card.full { grid-column: 1 / -1; }
+  .card-title { font-size: 13px; font-weight: 700; letter-spacing: 0.01em; margin-bottom: 4px; }
+  .card-desc { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-bottom: 1.25rem; }
+  .chart-wrap { position: relative; width: 100%; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .tab {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+  }
+  .tab:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
+
+  /* LEGEND */
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 1rem; font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .leg { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .leg-line { width: 16px; height: 2px; border-radius: 1px; flex-shrink: 0; }
+
+  /* SCOPE TABLE */
+  .scope-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  .scope-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .scope-name { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+  .scope-val { font-size: 15px; font-weight: 700; }
+  .scope-sub { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+
+  /* PE CALLOUT */
+  .pe-callout {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .pe-stat {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .pe-stat strong { color: var(--accent2); font-size: 15px; display: block; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 3rem;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+ }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../index.html" class="back">← Back to portfolio</a>
+  <span class="topbar-site">dmarroquin98.github.io</span>
+</div>
+
+<div class="hero">
+  <span class="hero-eyebrow">02 · Project Management · Real Estate · Finance</span>
+  <h1 class="hero-title">Industrial Warehouse Complex — Ecuador</h1>
+  <div class="hero-meta">
+    <span>Excel · Visio · AutoCAD</span>
+    <span>165,757 m² · 37 units</span>
+    <span>~$20M USD development</span>
+    <span>Ecuador · 2024</span>
+  </div>
+  <p class="hero-desc">End-to-end pre-construction planning for a large-scale industrial real estate development. Delivered a full Work Breakdown Structure, financial feasibility model, break-even analysis under two scenarios, and an investor cash flow model with a positive NPV of $4.49M at WACC 13.35%.</p>
+  <div class="hero-actions">
+    <a href="https://github.com/dmarroquin98/industrial-warehouse-complex-ecuador" target="_blank" class="btn btn-primary">View on GitHub ↗</a>
+    <a href="../README-bodegas.md" target="_blank" class="btn btn-secondary">README ↗</a>
+  </div>
+</div>
+
+<div class="dashboard-label">Interactive financial dashboard</div>
+
+<header>
+  <div class="header-left">
+    <p class="eyebrow">Project Finance Dashboard</p>
+    <h1>Industrial <span>Warehouse</span><br>Complex</h1>
+    <div class="header-meta">
+      <span>Ecuador · 2024</span>
+      <span>165,757 m² total land</span>
+      <span>37 sellable units</span>
+    </div>
+  </div>
+  <div class="header-badges">
+    <div class="badge badge-blue">Real Estate Development</div>
+    <div class="badge badge-blue">Project Management</div>
+    <div class="badge badge-green">Financial Feasibility</div>
+    <div class="badge badge-green">NPV Positive</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- KPI METRICS -->
+  <div class="section-label">Key metrics</div>
+  <div class="metrics">
+    <div class="metric" style="--accent-color: var(--accent);">
+      <div class="metric-label">Total construction cost</div>
+      <div class="metric-value" style="color: var(--accent);">$19.3<span style="font-size:1rem">M</span></div>
+      <div class="metric-sub">USD · rounded to $20M for financing</div>
+    </div>
+    <div class="metric" style="--accent-color: var(--accent2);">
+      <div class="metric-label">NPV (investor)</div>
+      <div class="metric-value" style="color: var(--accent2);">$4.49<span style="font-size:1rem">M</span></div>
+      <div class="metric-sub">WACC 13.35% · 5-year horizon</div>
+    </div>
+    <div class="metric" style="--accent-color: var(--accent3);">
+      <div class="metric-label">ROI (optimistic)</div>
+      <div class="metric-value" style="color: var(--accent3);">39.7<span style="font-size:1rem">%</span></div>
+      <div class="metric-sub">65–85% gross margin scenario</div>
+    </div>
+    <div class="metric" style="--accent-color: #a78bfa)">
+      <div class="metric-label">Break-even (conservative)</div>
+      <div class="metric-value" style="color: #a78bfa;">36.5<span style="font-size:1rem"> u.</span></div>
+      <div class="metric-sub">of 37 units · 47% gross margin</div>
+    </div>
+    <div class="metric" style="--accent-color: var(--accent2);">
+      <div class="metric-label">Break-even (optimistic)</div>
+      <div class="metric-value" style="color: var(--accent2);">25.6<span style="font-size:1rem"> u.</span></div>
+      <div class="metric-sub">of 37 units · 65–85% margin</div>
+    </div>
+    <div class="metric" style="--accent-color: var(--muted);">
+      <div class="metric-label">Initial investor outlay</div>
+      <div class="metric-value" style="color: var(--text);">$1.6<span style="font-size:1rem">M</span></div>
+      <div class="metric-sub">Pre-sale financing model</div>
+    </div>
+  </div>
+
+  <!-- PROJECT SCOPE -->
+  <div class="section-label">Project scope</div>
+  <div class="scope-grid">
+    <div class="scope-item"><span class="scope-name">Office-Warehouses</span><span class="scope-val">20 units</span><span class="scope-sub">37,860 m²</span></div>
+    <div class="scope-item"><span class="scope-name">Warehouses</span><span class="scope-val">15 units</span><span class="scope-sub">27,073 m²</span></div>
+    <div class="scope-item"><span class="scope-name">Commercial Areas</span><span class="scope-val">2 zones</span><span class="scope-sub">~5,500 m²</span></div>
+    <div class="scope-item"><span class="scope-name">Trailer Parking</span><span class="scope-val">2 lots</span><span class="scope-sub">16,675 m²</span></div>
+    <div class="scope-item"><span class="scope-name">Trailer Workshops</span><span class="scope-val">2 units</span><span class="scope-sub">3,688 m²</span></div>
+    <div class="scope-item"><span class="scope-name">Wastewater Plant</span><span class="scope-val">1 unit</span><span class="scope-sub">5,122 m²</span></div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="section-label">Financial analysis</div>
+  <div class="charts-grid">
+
+    <!-- BREAK-EVEN -->
+    <div class="card full">
+      <div class="card-title">Break-Even Analysis</div>
+      <div class="card-desc">Revenue vs. total costs by units sold — intersection is the break-even point</div>
+      <div class="tabs">
+        <button class="tab active" onclick="showPE('conservador', this)">Conservative · 47% margin</button>
+        <button class="tab" onclick="showPE('optimista', this)">Optimistic · 65–85% margin</button>
+      </div>
+      <div class="pe-callout" id="peCallout">
+        <div class="pe-stat"><strong id="peQe">36.5 units</strong>Break-even quantity</div>
+        <div class="pe-stat"><strong id="peIe">$26.86M</strong>Break-even revenue</div>
+        <div class="pe-stat"><strong id="peRoi">1.4%</strong>ROI at this scenario</div>
+      </div>
+      <div class="legend">
+        <span><span class="leg-line" style="background:#3b82f6"></span>Revenue</span>
+        <span><span class="leg-line" style="background:#ef4444; "></span>Total costs</span>
+      </div>
+      <div class="chart-wrap" style="height:280px;"><canvas id="peChart"></canvas></div>
+    </div>
+
+    <!-- COST STRUCTURE -->
+    <div class="card">
+      <div class="card-title">Cost Structure</div>
+      <div class="card-desc">Total construction investment by category</div>
+      <div class="legend">
+        <span><span class="leg" style="background:#6366f1"></span>Office-Wh.</span>
+        <span><span class="leg" style="background:#3b82f6"></span>Warehouses</span>
+        <span><span class="leg" style="background:#ef4444"></span>Infrastr.</span>
+        <span><span class="leg" style="background:#f59e0b"></span>Parking</span>
+        <span><span class="leg" style="background:#10b981"></span>Commercial</span>
+      </div>
+      <div class="chart-wrap" style="height:250px;"><canvas id="costoChart"></canvas></div>
+    </div>
+
+    <!-- UNIT PRICES -->
+    <div class="card">
+      <div class="card-title">Sale Price by Unit Type</div>
+      <div class="card-desc">Conservative scenario pricing</div>
+      <div class="chart-wrap" style="height:250px;"><canvas id="precioChart"></canvas></div>
+    </div>
+
+    <!-- INVESTOR CASH FLOW -->
+    <div class="card full">
+      <div class="card-title">Investor Cash Flow</div>
+      <div class="card-desc">Net cash flow per period + cumulative balance · Initial investment $1.6M USD · Recovery in Year 5</div>
+      <div class="legend">
+        <span><span class="leg" style="background:#3b82f6"></span>Net cash flow positive (left axis)</span>
+        <span><span class="leg" style="background:#ef4444"></span>Net cash flow negative (left axis)</span>
+        <span><span class="leg-line" style="background:#10b981"></span>Cumulative balance (right axis)</span>
+      </div>
+      <div class="chart-wrap" style="height:300px;"><canvas id="flujoChart"></canvas></div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  <span>Industrial Warehouse Complex · Ecuador 2024 · Financial Model v1.0</span>
+  <span>Tools: Microsoft Excel · Microsoft Visio · AutoCAD</span>
+</footer>
+
+<div class="site-footer">
+  <span>Daniel Napoleon Marroquín · Vancouver, BC</span>
+  <span><a href="https://linkedin.com/in/daniel-marroquin-08b449221" target="_blank">LinkedIn ↗</a> · <a href="https://github.com/dmarroquin98" target="_blank">GitHub ↗</a></span>
+</div>
+
+<script>
+
+const isDark = true;
+const gridColor = 'rgba(255,255,255,0.06)';
+const tickColor = '#6b7a94';
+
+Chart.defaults.color = tickColor;
+Chart.defaults.borderColor = gridColor;
+Chart.defaults.font.family = "'DM Mono', monospace";
+Chart.defaults.font.size = 11;
+
+const peData = {
+  conservador: {
+    labels: ['0','5','10','15','20','25','30','35','37'],
+    ingresos: [0,3682754,7365509,11048263,14731018,18413772,22096526,25779281,27252382],
+    costos:   [19258350,20300669,21342987,22385306,23427624,24469943,25512262,26554580,26971508],
+    qe: '36.5 units', ie: '$26.86M', roi: '1.4%'
+  },
+  optimista: {
+    labels: ['0','5','10','15','20','25','30','35','37'],
+    ingresos: [0,4802931,9605863,14408794,19211726,24014657,28817588,33620520,35541692],
+    costos:   [19258350,20300669,21342987,22385306,23427624,24469943,25512262,26554580,26971508],
+    qe: '25.6 units', ie: '$24.60M', roi: '39.7%'
+  }
+};
+
+let peChart;
+function fmtM(v) { return (v < 0 ? '-$' : '$') + Math.abs(v/1e6).toFixed(2) + 'M'; }
+
+function buildPE(scenario) {
+  const d = peData[scenario];
+  document.getElementById('peQe').textContent = d.qe;
+  document.getElementById('peIe').textContent = d.ie;
+  document.getElementById('peRoi').textContent = d.roi;
+  const ctx = document.getElementById('peChart').getContext('2d');
+  if (peChart) peChart.destroy();
+  peChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: d.labels,
+      datasets: [
+        { label: 'Revenue', data: d.ingresos, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.06)', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#3b82f6', fill: true, tension: 0.3 },
+        { label: 'Total Costs', data: d.costos, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.04)', borderWidth: 2, borderDash: [6,3], pointRadius: 3, pointBackgroundColor: '#ef4444', fill: true, tension: 0.3 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + fmtM(ctx.parsed.y) }, backgroundColor: '#131820', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 } },
+      scales: {
+        x: { title: { display: true, text: 'Units sold', color: tickColor }, grid: { color: gridColor }, ticks: { color: tickColor } },
+        y: { title: { display: true, text: 'USD', color: tickColor }, grid: { color: gridColor }, ticks: { color: tickColor, callback: v => '$' + (v/1e6).toFixed(0) + 'M' } }
+      }
+    }
+  });
+}
+
+function showPE(scenario, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  buildPE(scenario);
+}
+
+buildPE('conservador');
+
+new Chart(document.getElementById('costoChart').getContext('2d'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Office-Wh. 44%','Warehouses 26%','Infrastructure 15%','Parking/Workshops 10%','Commercial 5%'],
+    datasets: [{ data: [8394212,5086633,2888753,1925835,962918], backgroundColor: ['#6366f1','#3b82f6','#ef4444','#f59e0b','#10b981'], borderWidth: 2, borderColor: '#0b0f14' }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, cutout: '60%',
+    plugins: {
+      legend: { display: true, position: 'right', labels: { color: tickColor, boxWidth: 10, padding: 10, font: { size: 10 } } },
+      tooltip: { callbacks: { label: ctx => ctx.label + ': $' + (ctx.parsed/1e6).toFixed(2) + 'M' }, backgroundColor: '#131820', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 }
+    }
+  }
+});
+
+new Chart(document.getElementById('precioChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['Ofi-Wh 1,200m²','Ofi-Wh 1,497m²','Wh 1,200m²','Wh 1,901m²','Commercial'],
+    datasets: [{ label: 'Sale price (USD)', data: [789724,985279,594943,942489,908413], backgroundColor: ['rgba(99,102,241,0.8)','rgba(99,102,241,0.5)','rgba(59,130,246,0.8)','rgba(59,130,246,0.5)','rgba(16,185,129,0.8)'], borderWidth: 0, borderRadius: 5 }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => '$' + ctx.parsed.x.toLocaleString() }, backgroundColor: '#131820', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 } },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor, callback: v => '$' + (v/1e3).toFixed(0) + 'K' } },
+      y: { grid: { display: false }, ticks: { color: tickColor } }
+    }
+  }
+});
+
+const flujoNeto = [-1600000,48062,48062,48062,48062,11132238];
+const flujoAcum = flujoNeto.reduce((acc,v,i) => { acc.push((acc[i-1]||0)+v); return acc; }, []);
+
+new Chart(document.getElementById('flujoChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['Year 0','Year 1','Year 2','Year 3','Year 4','Year 5'],
+    datasets: [
+      {
+        label: 'Net cash flow',
+        data: flujoNeto,
+        backgroundColor: flujoNeto.map(v => v<0 ? 'rgba(239,68,68,0.75)' : 'rgba(59,130,246,0.75)'),
+        borderColor: flujoNeto.map(v => v<0 ? '#ef4444' : '#3b82f6'),
+        borderWidth: 1,
+        borderRadius: 5,
+        yAxisID: 'yBar',
+        order: 2
+      },
+      {
+        label: 'Cumulative balance',
+        data: flujoAcum,
+        type: 'line',
+        borderColor: '#10b981',
+        backgroundColor: 'rgba(16,185,129,0.06)',
+        borderWidth: 2.5,
+        pointRadius: 6,
+        pointBackgroundColor: flujoAcum.map(v => v<0 ? '#ef4444' : '#10b981'),
+        pointBorderColor: '#0b0f14',
+        pointBorderWidth: 2,
+        fill: true,
+        tension: 0.35,
+        yAxisID: 'yLine',
+        order: 1
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.dataset.label + ': ' + fmtM(ctx.parsed.y)
+        },
+        backgroundColor: '#131820',
+        borderColor: 'rgba(255,255,255,0.1)',
+        borderWidth: 1
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: gridColor },
+        ticks: { color: tickColor }
+      },
+      yBar: {
+        type: 'linear',
+        position: 'left',
+        title: { display: true, text: 'Net cash flow (USD)', color: tickColor, font: { size: 10 } },
+        grid: { color: gridColor },
+        ticks: { color: '#3b82f6', callback: v => (v<0?'-':'') + '$' + Math.abs(v/1e6).toFixed(1) + 'M' }
+      },
+      yLine: {
+        type: 'linear',
+        position: 'right',
+        title: { display: true, text: 'Cumulative balance (USD)', color: tickColor, font: { size: 10 } },
+        grid: { drawOnChartArea: false },
+        ticks: { color: '#10b981', callback: v => (v<0?'-':'') + '$' + Math.abs(v/1e6).toFixed(1) + 'M' }
+      }
+    }
+  }
+});
+
+</script>
+</body>
+</html>
