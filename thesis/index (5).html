@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Commerce SEM Study — Daniel Marroquín</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+body{margin:0;padding:0;font-family:'DM Sans',sans-serif;background:#f5f2eb;color:#0e0e0e;line-height:1.7;}
+*,*::before,*::after{box-sizing:border-box;}
+.topbar{padding:1rem 3rem;border-bottom:1px solid rgba(14,14,14,0.1);display:flex;align-items:center;justify-content:space-between;background:#f5f2eb;}
+.back{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#7a7468;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.15s;}
+.back:hover{color:#0e0e0e;}
+.topbar-site{font-family:'DM Mono',monospace;font-size:11px;color:#7a7468;}
+.hero{padding:2.5rem 3rem 2rem;border-bottom:2px solid rgba(14,14,14,0.08);background:#f5f2eb;}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#c4872a;margin-bottom:0.6rem;display:block;}
+.hero-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;line-height:1.1;letter-spacing:-0.02em;color:#0e0e0e;margin-bottom:0.8rem;}
+.hero-meta{font-family:'DM Mono',monospace;font-size:11px;color:#7a7468;display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1rem;}
+.hero-desc{font-size:14px;color:#4a4740;max-width:760px;line-height:1.8;margin-bottom:1.2rem;}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.btn{font-family:'DM Mono',monospace;font-size:11px;padding:8px 16px;border-radius:6px;text-decoration:none;border:1px solid;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;}
+.btn-primary{background:#1a3a5c;color:white;border-color:#1a3a5c;}
+.btn-primary:hover{background:#0f2438;}
+.btn-secondary{background:transparent;color:#0e0e0e;border-color:rgba(0,0,0,0.15);}
+.btn-secondary:hover{background:#0e0e0e;color:#f5f2eb;}
+.page-section{padding:2.5rem 3rem;border-bottom:1px solid rgba(14,14,14,0.08);}
+.page-section:last-of-type{border-bottom:none;}
+.section-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:#7a7468;margin-bottom:0.75rem;display:flex;align-items:center;gap:10px;}
+.section-eyebrow::after{content:'';flex:1;height:1px;background:rgba(14,14,14,0.1);}
+.section-title{font-family:'Playfair Display',Georgia,serif;font-size:1.4rem;font-weight:700;margin-bottom:0.75rem;letter-spacing:-0.01em;}
+.prose{font-size:14px;color:#3a3530;line-height:1.85;max-width:800px;}
+.prose p{margin-bottom:1rem;}
+.prose p:last-child{margin-bottom:0;}
+.insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:1.25rem;}
+.insight-card{background:white;border:1px solid rgba(14,14,14,0.1);border-radius:8px;padding:1.1rem 1.2rem;border-left:3px solid #1a3a5c;}
+.insight-card.amber{border-left-color:#c4872a;}
+.insight-card.green{border-left-color:#2e7d5e;}
+.insight-card.red{border-left-color:#c0392b;}
+.insight-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#7a7468;margin-bottom:5px;}
+.insight-val{font-family:'Playfair Display',Georgia,serif;font-size:1.5rem;font-weight:700;line-height:1;margin-bottom:4px;}
+.insight-sub{font-size:12px;color:#7a7468;font-family:'DM Mono',monospace;}
+.conclusion-box{background:white;border:1px solid rgba(14,14,14,0.12);border-radius:10px;padding:1.5rem 1.75rem;max-width:800px;margin-top:1rem;}
+.conclusion-box p{font-size:14px;color:#3a3530;line-height:1.85;margin-bottom:0.75rem;}
+.conclusion-box p:last-child{margin-bottom:0;}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:1rem;}
+.tag{font-family:'DM Mono',monospace;font-size:10px;padding:3px 9px;border-radius:3px;border:1px solid rgba(14,14,14,0.15);color:#7a7468;background:#ede9df;}
+.site-footer{border-top:1px solid rgba(14,14,14,0.1);padding:1.2rem 3rem;display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:11px;color:#7a7468;background:#ede9df;}
+.site-footer a{color:inherit;text-decoration:none;}
+@media(max-width:700px){.topbar,.hero,.page-section,.site-footer{padding-left:1.5rem;padding-right:1.5rem;}.hero-meta{gap:1rem;}}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f7f5f0;
+  --surface: #ffffff;
+  --surface2: #f0ede6;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.14);
+  --text: #1a1814;
+  --muted: #7a7568;
+  --accent: #2a6496;
+  --accent2: #2e7d5e;
+  --accent3: #b85c2a;
+  --warn: #c0392b;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+body { background: var(--bg); color: var(--text); font-family: var(--font-mono); min-height: 100vh; }
+
+header {
+  background: var(--text);
+  color: #f7f5f0;
+  padding: 2.5rem 3rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: start;
+}
+.eyebrow { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.5; margin-bottom: 0.75rem; }
+h1 { font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; color: #f7f5f0; }
+h1 em { font-style: italic; color: #a8c8e8; }
+.header-meta { font-size: 11px; opacity: 0.5; margin-top: 1rem; line-height: 2; }
+.header-tags { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+.tag { font-size: 10px; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: 3px; opacity: 0.7; letter-spacing: 0.08em; white-space: nowrap; }
+
+main { padding: 2rem 3rem 4rem; max-width: 1300px; margin: 0 auto; }
+@media (max-width: 750px) { main { padding: 1.25rem; } header { padding: 1.5rem; grid-template-columns: 1fr; } .header-tags { align-items: flex-start; } }
+
+.section-label {
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); margin: 2.5rem 0 1rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+
+/* METRIC CARDS */
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px,1fr)); gap: 10px; }
+.metric {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 1rem 1.1rem;
+  border-top: 3px solid var(--m-color, var(--accent));
+}
+.metric-label { font-size: 10px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
+.metric-value { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; line-height: 1; color: var(--m-color, var(--text)); }
+.metric-sub { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+/* CARDS */
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 750px) { .charts-grid { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--border2); border-radius: 10px; padding: 1.4rem; }
+.card.full { grid-column: 1 / -1; }
+.card-title { font-family: var(--font-display); font-size: 1rem; font-weight: 600; margin-bottom: 3px; }
+.card-desc { font-size: 10px; color: var(--muted); margin-bottom: 1.1rem; letter-spacing: 0.04em; line-height: 1.7; }
+.chart-wrap { position: relative; width: 100%; }
+
+/* LEGEND */
+.legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 0.9rem; font-size: 10px; color: var(--muted); }
+.legend span { display: flex; align-items: center; gap: 5px; }
+.leg { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+/* FIT INDEX TABLE */
+.fit-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.fit-table th { text-align: left; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--border2); font-weight: 500; }
+.fit-table td { padding: 7px 8px; border-bottom: 1px solid var(--border); }
+.fit-table tr:last-child td { border-bottom: none; }
+.fit-table .val { font-family: var(--font-mono); font-weight: 500; }
+.badge-ok { background: #e8f5ee; color: #1d6a3e; padding: 2px 7px; border-radius: 3px; font-size: 10px; border: 1px solid #b2dcc4; }
+.badge-no { background: #fdecea; color: var(--warn); padding: 2px 7px; border-radius: 3px; font-size: 10px; border: 1px solid #f5b7b1; }
+.badge-ok2 { background: #fff8e6; color: #8a5e00; padding: 2px 7px; border-radius: 3px; font-size: 10px; border: 1px solid #f0d080; }
+
+/* HYPOTHESIS */
+.hyp-grid { display: grid; gap: 8px; }
+.hyp { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border2); background: var(--surface2); }
+.hyp-label { font-size: 11px; flex: 1; line-height: 1.5; }
+.hyp-label strong { font-weight: 500; display: block; }
+.hyp-label small { color: var(--muted); font-size: 10px; }
+.hyp-result { font-size: 10px; white-space: nowrap; }
+
+/* SEM PATH DIAGRAM */
+.sem-wrap { display: flex; justify-content: center; padding: 1rem 0; }
+svg.sem { width: 100%; max-width: 640px; height: auto; }
+
+/* PIPELINE STEPS */
+.pipeline { display: flex; gap: 0; align-items: stretch; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.pipe-step {
+  flex: 1; min-width: 90px; background: var(--surface2);
+  border: 1px solid var(--border2); padding: 0.75rem;
+  font-size: 10px; position: relative; text-align: center;
+  line-height: 1.5;
+}
+.pipe-step:not(:last-child)::after {
+  content: '→'; position: absolute; right: -10px; top: 50%;
+  transform: translateY(-50%); color: var(--muted); font-size: 14px; z-index: 1;
+}
+.pipe-step strong { display: block; font-size: 11px; margin-bottom: 2px; color: var(--accent); }
+.pipe-step:first-child { border-radius: 6px 0 0 6px; }
+.pipe-step:last-child { border-radius: 0 6px 6px 0; }
+
+footer {
+  border-top: 1px solid var(--border2); padding: 1.2rem 3rem;
+  font-size: 10px; color: var(--muted);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../index.html" class="back">← Back to portfolio</a>
+  <span class="topbar-site">dmarroquin98.github.io</span>
+</div>
+
+<div class="hero">
+  <span class="hero-eyebrow">03 · Quantitative Research · Undergraduate Thesis · ESPE Ecuador · 2021</span>
+  <h1 class="hero-title">Factors Influencing E-Commerce<br>Purchase Intention During COVID-19</h1>
+  <div class="hero-meta">
+    <span>SPSS · SPSS AMOS · R</span>
+    <span>n = 384 participants · Quito, Ecuador</span>
+    <span>EFA → CFA → SEM pipeline</span>
+    <span>5 latent constructs · CFI 0.979</span>
+  </div>
+  <p class="hero-desc">An empirical study investigating the factors that shaped online purchase behavior among consumers in Quito, Ecuador during the COVID-19 pandemic. Using a full EFA → CFA → SEM analytical pipeline grounded in the UTAUT 2 framework, the study tested which technology acceptance constructs — performance expectancy, social influence, facilitating conditions — best explain habitual e-commerce usage and perceived service quality.</p>
+  <div class="hero-actions">
+    <a href="https://github.com/dmarroquin98/ecommerce-purchase-intention-sem" target="_blank" class="btn btn-primary">View on GitHub ↗</a>
+  </div>
+</div>
+
+<!-- CONTEXT -->
+<div class="page-section">
+  <div class="section-eyebrow">Research context & design</div>
+  <h2 class="section-title">Background & Methodology</h2>
+  <div class="prose">
+    <p>The COVID-19 pandemic dramatically accelerated e-commerce adoption globally, yet many consumers — particularly in emerging economies — remained reluctant to transact online. Ecuador's digital retail sector had grown substantially in the years before the pandemic (16M transactions, $1.29B in sales by 2018), but structural barriers including digital trust, payment infrastructure, and service quality continued to constrain growth. This study set out to identify which psychological and contextual factors most strongly predicted habitual e-commerce use among residents of Quito during the 2020–2021 period.</p>
+    <p>The theoretical foundation draws on the Unified Theory of Acceptance and Use of Technology (UTAUT 2) by Venkatesh et al. (2012), extended with a Service Quality construct (CSB) adapted from the Three-Component Model of Rust & Oliver. Six domain experts validated the initial measurement instrument, which was administered as a five-point Likert-scale survey to 384 participants recruited from a digital database of online shoppers aged 18–65.</p>
+    <p>The analytical pipeline proceeded in four stages: (1) reliability analysis using Cronbach's alpha to identify and remove poorly performing items, (2) Exploratory Factor Analysis (EFA) in SPSS using Principal Axis Factoring with Varimax rotation to identify the latent factor structure, (3) Confirmatory Factor Analysis (CFA) in SPSS AMOS using Maximum Likelihood estimation to test model fit and assess convergent validity via AVE and Composite Reliability, and (4) Structural Equation Modeling (SEM) to test the hypothesized structural relationships between latent constructs. Multivariate normality was assessed using the Royston test in R.</p>
+  </div>
+  <div class="tag-row">
+    <span class="tag">UTAUT 2</span><span class="tag">Structural Equation Modeling</span><span class="tag">Exploratory Factor Analysis</span><span class="tag">Confirmatory Factor Analysis</span><span class="tag">SPSS AMOS</span><span class="tag">Cronbach's Alpha</span><span class="tag">AVE · Composite Reliability</span><span class="tag">Maximum Likelihood</span>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="page-section" style="padding-top:1.5rem;padding-bottom:1.5rem;">
+  <div class="section-eyebrow">Interactive research dashboard</div>
+  <main>
+
+  <!-- KPI -->
+  <div class="section-label">Study at a glance</div>
+  <div class="metrics">
+    <div class="metric" style="--m-color: var(--accent);">
+      <div class="metric-label">Sample size</div>
+      <div class="metric-value">384</div>
+      <div class="metric-sub">Quito residents, online buyers</div>
+    </div>
+    <div class="metric" style="--m-color: var(--accent2);">
+      <div class="metric-label">KMO index</div>
+      <div class="metric-value">0.962</div>
+      <div class="metric-sub">Excellent (&gt;0.90)</div>
+    </div>
+    <div class="metric" style="--m-color: var(--accent);">
+      <div class="metric-label">Overall Cronbach's α</div>
+      <div class="metric-value">0.86+</div>
+      <div class="metric-sub">All constructs &gt; 0.70 ✓</div>
+    </div>
+    <div class="metric" style="--m-color: var(--accent2);">
+      <div class="metric-label">Final SEM — CFI</div>
+      <div class="metric-value">0.979</div>
+      <div class="metric-sub">Excellent (&gt;0.90)</div>
+    </div>
+    <div class="metric" style="--m-color: var(--accent2);">
+      <div class="metric-label">Final SEM — RMSEA</div>
+      <div class="metric-value">0.046</div>
+      <div class="metric-sub">Good (≤0.05) ✓</div>
+    </div>
+    <div class="metric" style="--m-color: var(--accent3);">
+      <div class="metric-label">Latent variables (final)</div>
+      <div class="metric-value">5</div>
+      <div class="metric-sub">ER · IS · CF · H · CSB</div>
+    </div>
+  </div>
+
+  <!-- METHODOLOGY PIPELINE -->
+  <div class="section-label">Analytical pipeline</div>
+  <div class="pipeline">
+    <div class="pipe-step"><strong>Survey</strong>5-point Likert<br>n=384</div>
+    <div class="pipe-step"><strong>Assumptions</strong>Normality<br>Collinearity</div>
+    <div class="pipe-step"><strong>EFA</strong>SPSS<br>Principal Axis</div>
+    <div class="pipe-step"><strong>Cronbach α</strong>Reliability<br>≥ 0.70</div>
+    <div class="pipe-step"><strong>CFA</strong>AMOS<br>Max. Likelihood</div>
+    <div class="pipe-step"><strong>SEM</strong>AMOS<br>Respecification</div>
+    <div class="pipe-step"><strong>AVE / CR</strong>Validity<br>check</div>
+  </div>
+
+  <div class="charts-grid">
+
+    <!-- CRONBACH ALPHA -->
+    <div class="card">
+      <div class="card-title">Cronbach's Alpha by Construct</div>
+      <div class="card-desc">Reliability check — all constructs exceed the 0.70 threshold after EFA cleanup</div>
+      <div class="chart-wrap" style="height:240px;"><canvas id="alphaChart" role="img" aria-label="Bar chart of Cronbach alpha values by latent construct">All constructs above 0.70: ER 0.917, IS 0.892, CF 0.897, H 0.867, CSB 0.909.</canvas></div>
+    </div>
+
+    <!-- AVE & CR -->
+    <div class="card">
+      <div class="card-title">AVE & Composite Reliability (CR)</div>
+      <div class="card-desc">Convergent validity — AVE &gt; 0.50, CR &gt; 0.70 required for all final constructs</div>
+      <div class="legend">
+        <span><span class="leg" style="background:#2a6496"></span>AVE (threshold 0.50)</span>
+        <span><span class="leg" style="background:#2e7d5e"></span>CR (threshold 0.70)</span>
+      </div>
+      <div class="chart-wrap" style="height:210px;"><canvas id="aveChart" role="img" aria-label="Grouped bar chart showing AVE and CR values per construct">All constructs meet AVE>0.50 and CR>0.70 criteria.</canvas></div>
+    </div>
+
+    <!-- VARIANCE EXPLAINED -->
+    <div class="card">
+      <div class="card-title">EFA — Variance Explained by Factor</div>
+      <div class="card-desc">8 factors extracted via principal axis factoring with Varimax rotation</div>
+      <div class="chart-wrap" style="height:240px;"><canvas id="varChart" role="img" aria-label="Bar chart showing percentage of variance explained by each extracted factor">Factor 1 explains 45.9%, Factor 2 7.0%, cumulative reaching ~61% at Factor 4.</canvas></div>
+    </div>
+
+    <!-- FIT INDICES -->
+    <div class="card">
+      <div class="card-title">Model Fit Indices — CFA vs Final SEM</div>
+      <div class="card-desc">Comparison across model iterations — final SEM (Model 2) meets all key criteria</div>
+      <div style="overflow-x:auto;">
+        <table class="fit-table">
+          <thead>
+            <tr>
+              <th>Index</th>
+              <th>Threshold</th>
+              <th>CFA M1</th>
+              <th>CFA M2</th>
+              <th>SEM Final</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>GFI</td><td>→ 1</td><td class="val">0.821</td><td class="val">0.949</td><td class="val"><strong>0.931</strong></td></tr>
+            <tr><td>RMSEA</td><td>≤ 0.05</td><td class="val"><span class="badge-no">0.055</span></td><td class="val"><span class="badge-ok">0.048</span></td><td class="val"><span class="badge-ok">0.046</span></td></tr>
+            <tr><td>NFI</td><td>&gt; 0.90</td><td class="val"><span class="badge-ok">0.878</span></td><td class="val"><span class="badge-ok">0.947</span></td><td class="val"><span class="badge-ok">0.950</span></td></tr>
+            <tr><td>TLI/NNFI</td><td>≥ 0.90</td><td class="val"><span class="badge-ok">0.929</span></td><td class="val"><span class="badge-ok">0.972</span></td><td class="val"><span class="badge-ok">0.974</span></td></tr>
+            <tr><td>CFI</td><td>&gt; 0.90</td><td class="val"><span class="badge-ok">0.935</span></td><td class="val"><span class="badge-ok">0.977</span></td><td class="val"><span class="badge-ok">0.979</span></td></tr>
+            <tr><td>PGFI</td><td>→ 1</td><td class="val">0.710</td><td class="val">0.679</td><td class="val">0.675</td></tr>
+            <tr><td>AIC</td><td>→ 0</td><td class="val">1543.0</td><td class="val">309.6</td><td class="val"><strong>301.4</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SAMPLE DEMOGRAPHICS -->
+    <div class="card">
+      <div class="card-title">Sample Demographics</div>
+      <div class="card-desc">Age distribution of the 384 participants who agreed to participate</div>
+      <div class="legend">
+        <span><span class="leg" style="background:#2a6496"></span>18–24</span>
+        <span><span class="leg" style="background:#3a7fc1"></span>25–34</span>
+        <span><span class="leg" style="background:#2e7d5e"></span>35–44</span>
+        <span><span class="leg" style="background:#b85c2a"></span>45–54</span>
+        <span><span class="leg" style="background:#8a5e00"></span>55–65</span>
+      </div>
+      <div class="chart-wrap" style="height:210px;"><canvas id="demoChart" role="img" aria-label="Donut chart showing age distribution of study participants">Age groups: 18-24, 25-34, 35-44, 45-54, 55-65.</canvas></div>
+    </div>
+
+    <!-- HYPOTHESIS RESULTS -->
+    <div class="card">
+      <div class="card-title">SEM — Hypothesis Results</div>
+      <div class="card-desc">Structural relationships tested in the final respecified model (*** = p &lt; 0.001)</div>
+      <div class="hyp-grid">
+        <div class="hyp" style="border-left: 3px solid var(--accent2);">
+          <div class="hyp-label"><strong>IS → Habit (H)</strong><small>Social influence positively predicts Habit</small></div>
+          <div class="hyp-result"><span class="badge-ok">p &lt; .001 ✓</span></div>
+        </div>
+        <div class="hyp" style="border-left: 3px solid var(--warn);">
+          <div class="hyp-label"><strong>ER → Habit (H)</strong><small>Performance expectancy does not predict Habit</small></div>
+          <div class="hyp-result"><span class="badge-no">p = .333 ✗</span></div>
+        </div>
+        <div class="hyp" style="border-left: 3px solid var(--accent2);">
+          <div class="hyp-label"><strong>CF → Habit (H)</strong><small>Facilitating conditions positively predict Habit</small></div>
+          <div class="hyp-result"><span class="badge-ok">p &lt; .001 ✓</span></div>
+        </div>
+        <div class="hyp" style="border-left: 3px solid var(--accent);">
+          <div class="hyp-label"><strong>ER ↔ IS &nbsp;/&nbsp; ER ↔ CF &nbsp;/&nbsp; IS ↔ CF</strong><small>All inter-construct correlations significant</small></div>
+          <div class="hyp-result"><span class="badge-ok">p &lt; .001 ✓</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEM PATH DIAGRAM -->
+    <div class="card full">
+      <div class="card-title">Final SEM Model — Path Diagram</div>
+      <div class="card-desc">Simplified representation of the final structural model. Solid lines = significant paths (p &lt; .001). Dashed = non-significant. Double arrows = correlations.</div>
+      <div class="sem-wrap">
+        <svg class="sem" viewBox="0 0 660 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SEM path diagram showing relationships between latent variables">
+          <title>Final SEM path diagram</title>
+          <defs>
+            <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#2a6496"/>
+            </marker>
+            <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#c0392b"/>
+            </marker>
+            <marker id="arr3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#7a7568"/>
+            </marker>
+            <marker id="arr3b" markerWidth="8" markerHeight="8" refX="2" refY="3" orient="auto-start-reverse">
+              <path d="M8,0 L8,6 L0,3 z" fill="#7a7568"/>
+            </marker>
+          </defs>
+
+          <!-- Background boxes for constructs -->
+          <!-- ER -->
+          <rect x="30" y="50" width="120" height="52" rx="8" fill="#e8f1f8" stroke="#2a6496" stroke-width="1.5"/>
+          <text x="90" y="72" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="13" font-weight="500" fill="#1a3652">ER</text>
+          <text x="90" y="90" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#2a6496">Performance Expect.</text>
+
+          <!-- IS -->
+          <rect x="30" y="145" width="120" height="52" rx="8" fill="#e8f1f8" stroke="#2a6496" stroke-width="1.5"/>
+          <text x="90" y="167" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="13" font-weight="500" fill="#1a3652">IS</text>
+          <text x="90" y="185" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#2a6496">Social Influence</text>
+
+          <!-- CF -->
+          <rect x="30" y="240" width="120" height="52" rx="8" fill="#e8f1f8" stroke="#2a6496" stroke-width="1.5"/>
+          <text x="90" y="262" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="13" font-weight="500" fill="#1a3652">CF</text>
+          <text x="90" y="280" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#2a6496">Facilitating Cond.</text>
+
+          <!-- H (center) -->
+          <rect x="255" y="140" width="130" height="60" rx="8" fill="#e8f5ee" stroke="#2e7d5e" stroke-width="2"/>
+          <text x="320" y="164" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="14" font-weight="500" fill="#1a3d2b">Habit (H)</text>
+          <text x="320" y="184" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#2e7d5e">Central construct</text>
+
+          <!-- CSB -->
+          <rect x="490" y="140" width="140" height="60" rx="8" fill="#fdf3ec" stroke="#b85c2a" stroke-width="1.5"/>
+          <text x="560" y="164" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="13" font-weight="500" fill="#5a2a0a">CSB</text>
+          <text x="560" y="184" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#b85c2a">Service Quality</text>
+
+          <!-- Paths: IS → H (significant) -->
+          <line x1="150" y1="171" x2="252" y2="166" stroke="#2a6496" stroke-width="2" marker-end="url(#arr)"/>
+          <text x="198" y="160" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#2a6496">***</text>
+
+          <!-- CF → H (significant) -->
+          <line x1="150" y1="262" x2="252" y2="188" stroke="#2a6496" stroke-width="2" marker-end="url(#arr)"/>
+          <text x="205" y="238" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#2a6496">***</text>
+
+          <!-- ER → H (NOT significant, dashed red) -->
+          <line x1="150" y1="76" x2="252" y2="150" stroke="#c0392b" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arr2)"/>
+          <text x="210" y="108" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#c0392b">p=.333 ns</text>
+
+          <!-- H → CSB (correlation, double arrow) -->
+          <line x1="385" y1="170" x2="487" y2="170" stroke="#7a7568" stroke-width="1.5" marker-end="url(#arr3)" marker-start="url(#arr3b)"/>
+          <text x="436" y="163" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#7a7568">r = good</text>
+
+          <!-- ER ↔ IS correlation arc -->
+          <path d="M 42 102 Q 10 148 42 145" stroke="#7a7568" stroke-width="1" fill="none" stroke-dasharray="3,3" marker-end="url(#arr3)"/>
+
+          <!-- IS ↔ CF correlation arc -->
+          <path d="M 42 197 Q 10 240 42 240" stroke="#7a7568" stroke-width="1" fill="none" stroke-dasharray="3,3" marker-end="url(#arr3)"/>
+
+          <!-- ER ↔ CF correlation arc -->
+          <path d="M 30 76 Q -10 170 30 264" stroke="#7a7568" stroke-width="1" fill="none" stroke-dasharray="3,3" marker-end="url(#arr3)"/>
+
+          <!-- Legend bottom -->
+          <rect x="30" y="308" width="10" height="10" rx="2" fill="#2a6496"/>
+          <text x="46" y="318" font-family="IBM Plex Mono,monospace" font-size="9" fill="#7a7568">Significant path (p&lt;.001)</text>
+          <rect x="200" y="308" width="16" height="2" rx="1" fill="#c0392b"/>
+          <text x="222" y="318" font-family="IBM Plex Mono,monospace" font-size="9" fill="#7a7568">Non-significant (dashed)</text>
+          <rect x="390" y="308" width="16" height="2" rx="1" fill="#7a7568"/>
+          <text x="412" y="318" font-family="IBM Plex Mono,monospace" font-size="9" fill="#7a7568">Correlation (↔)</text>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+</div>
+
+<!-- ANALYSIS -->
+<div class="page-section">
+  <div class="section-eyebrow">Analysis & findings</div>
+  <h2 class="section-title">Key Findings</h2>
+  <div class="insight-grid">
+    <div class="insight-card green">
+      <div class="insight-label">KMO — sampling adequacy</div>
+      <div class="insight-val">0.962</div>
+      <div class="insight-sub">Excellent (>0.90) — data well-suited for factor analysis</div>
+    </div>
+    <div class="insight-card green">
+      <div class="insight-label">Final model CFI</div>
+      <div class="insight-val">0.979</div>
+      <div class="insight-sub">Exceeds 0.90 threshold — excellent incremental fit</div>
+    </div>
+    <div class="insight-card green">
+      <div class="insight-label">Final model RMSEA</div>
+      <div class="insight-val">0.046</div>
+      <div class="insight-sub">Below 0.05 — good absolute fit</div>
+    </div>
+    <div class="insight-card red">
+      <div class="insight-label">Non-significant path</div>
+      <div class="insight-val">ER → H</div>
+      <div class="insight-sub">Performance expectancy does not predict Habit (p = .333)</div>
+    </div>
+  </div>
+
+  <div class="prose" style="margin-top:1.5rem;">
+    <p><strong>Measurement model quality.</strong> All five retained constructs (ER, IS, CF, H, CSB) demonstrated good reliability with Cronbach's alpha above 0.86, and met convergent validity criteria with AVE values ranging from 0.619 to 0.766 and Composite Reliability above 0.83 across all constructs. The EFA identified a dominant first factor explaining 45.95% of total variance, with cumulative variance reaching 61.3% at four factors — a structure consistent with a general technology acceptance dimension underlying the specific constructs.</p>
+    <p><strong>Model respecification.</strong> The initial CFA model (Model 1) showed marginal fit on RMSEA (0.055) and NFI (0.878). Guided by modification indices, correlated residuals were introduced between indicators sharing similar wording, yielding the final model (CFI 0.977, RMSEA 0.048). The SEM model, built on this CFA output with additional correlated errors within the ER and H constructs, achieved the best overall fit (CFI 0.979, RMSEA 0.046, AIC 301.4 — lowest across all models tested).</p>
+    <p><strong>Structural hypotheses.</strong> Social Influence (IS → H, p &lt; .001) and Facilitating Conditions (CF → H, p &lt; .001) were both significant positive predictors of Habit — meaning that social norms around online shopping and the availability of supporting infrastructure (devices, internet, payment systems) were the primary drivers of habitual e-commerce behavior. Performance Expectancy (ER → H, p = .333) was not significant, suggesting that perceived usefulness alone does not translate into consistent online purchasing behavior in this population — a finding that diverges from results in more digitally mature markets and may reflect lower digital self-efficacy and trust among Quito consumers at the time of the study.</p>
+  </div>
+</div>
+
+<!-- CONCLUSIONS -->
+<div class="page-section">
+  <div class="section-eyebrow">Conclusions & limitations</div>
+  <h2 class="section-title">Conclusions</h2>
+  <div class="conclusion-box">
+    <p>The study provides empirical evidence that social influence and structural facilitation — rather than perceived functional utility — are the primary levers driving habitual e-commerce adoption in Quito during the COVID-19 period. This has direct implications for digital marketing strategy: campaigns that emphasize social proof, peer behavior, and community adoption may be more effective than those focused on features or convenience alone. Ensuring access to reliable payment infrastructure and devices (facilitating conditions) is equally critical.</p>
+    <p>The non-significance of Performance Expectancy is a theoretically interesting departure from UTAUT 2 findings in developed-market contexts. It may reflect a saturation effect — by the time of the survey (mid-pandemic), most active online shoppers had already internalized the utility of e-commerce, making it a baseline expectation rather than a differentiating motivator for habit formation.</p>
+    <p><strong>Limitations:</strong> The original research objective — modeling direct purchase intention (IC) — could not be fully realized because the IC construct was eliminated during CFA respecification due to insufficient observable indicators after item removal. The final model explains Habit and its relationship to perceived Service Quality (CSB), which are strong proxies for behavioral intention but not equivalent. Additionally, the non-probabilistic sampling method limits generalizability beyond the digitally accessible population in Quito. Future research should employ probabilistic sampling, a longer longitudinal design, and include a validated purchase intention scale with sufficient items to survive model respecification.</p>
+  </div>
+</div>
+
+<div class="site-footer">
+  <span>Daniel Napoleon Marroquín · Vancouver, BC · Marroquín, D. (2021)</span>
+  <span><a href="https://linkedin.com/in/daniel-marroquin-08b449221" target="_blank">LinkedIn ↗</a> · <a href="https://github.com/dmarroquin98" target="_blank">GitHub ↗</a></span>
+</div>
+
+<script>
+const gridC = 'rgba(0,0,0,0.07)';
+const tickC = '#7a7568';
+Chart.defaults.color = tickC;
+Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+Chart.defaults.font.size = 10;
+
+const tooltipDefaults = { backgroundColor: '#1a1814', borderColor: 'rgba(0,0,0,0.2)', borderWidth: 1 };
+
+// Cronbach Alpha chart
+new Chart(document.getElementById('alphaChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['ER\n(Perf. Expect.)', 'IS\n(Social Infl.)', 'CF\n(Facilit. Cond.)', 'H\n(Habit)', 'CSB\n(Service Q.)'],
+    datasets: [{
+      label: "Cronbach's α",
+      data: [0.917, 0.892, 0.897, 0.867, 0.909],
+      backgroundColor: ['#2a6496','#3a7fc1','#2e7d5e','#b85c2a','#7a5ea0'],
+      borderWidth: 0, borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...tooltipDefaults, callbacks: { label: c => 'α = ' + c.parsed.y.toFixed(3) } }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: tickC } },
+      y: { min: 0.7, max: 1.0, grid: { color: gridC }, ticks: { color: tickC, callback: v => v.toFixed(2) },
+           title: { display: true, text: 'α value', color: tickC } }
+    }
+  }
+});
+
+// AVE & CR chart
+new Chart(document.getElementById('aveChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['ER', 'IS', 'CF', 'H', 'CSB'],
+    datasets: [
+      { label: 'AVE (>0.50)', data: [0.766, 0.697, 0.745, 0.619, 0.628], backgroundColor: 'rgba(42,100,150,0.8)', borderWidth: 0, borderRadius: 3 },
+      { label: 'CR (>0.70)',  data: [0.908, 0.873, 0.897, 0.830, 0.909], backgroundColor: 'rgba(46,125,94,0.8)',  borderWidth: 0, borderRadius: 3 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...tooltipDefaults, callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y.toFixed(3) } }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: tickC } },
+      y: { min: 0.4, max: 1.0, grid: { color: gridC }, ticks: { color: tickC, callback: v => v.toFixed(1) } }
+    }
+  }
+});
+
+// Variance Explained
+new Chart(document.getElementById('varChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['F1','F2','F3','F4','F5','F6','F7','F8'],
+    datasets: [
+      { label: '% Variance', data: [45.95, 7.05, 5.07, 3.23, 0, 0, 0, 0], backgroundColor: 'rgba(42,100,150,0.7)', borderWidth: 0, borderRadius: 4, yAxisID: 'y' },
+      { label: 'Cumulative %', data: [45.95, 52.99, 58.07, 61.30, 61.30, 61.30, 61.30, 61.30], type: 'line', borderColor: '#b85c2a', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#b85c2a', yAxisID: 'y' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...tooltipDefaults, callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y.toFixed(2) + '%' } }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: tickC } },
+      y: { min: 0, max: 75, grid: { color: gridC }, ticks: { color: tickC, callback: v => v + '%' } }
+    }
+  }
+});
+
+// Demographics donut
+new Chart(document.getElementById('demoChart').getContext('2d'), {
+  type: 'doughnut',
+  data: {
+    labels: ['18–24','25–34','35–44','45–54','55–65'],
+    datasets: [{
+      data: [38, 32, 16, 9, 5],
+      backgroundColor: ['#2a6496','#3a7fc1','#2e7d5e','#b85c2a','#8a5e00'],
+      borderWidth: 2, borderColor: '#ffffff'
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, cutout: '58%',
+    plugins: {
+      legend: { display: true, position: 'right', labels: { color: tickC, boxWidth: 10, padding: 8, font: { size: 10 } } },
+      tooltip: { ...tooltipDefaults, callbacks: { label: c => c.label + ': ~' + c.parsed + '%' } }
+    }
+  }
+});
+</script>
+</body>
+</html>
